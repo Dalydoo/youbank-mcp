@@ -1,0 +1,60 @@
+{
+  "name": "youbank-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server exposing the YouBank personal vault — hybrid search, atomic notes, entity graph, user highlights, vault stats. Read-only reference implementation backed by a documented Postgres/Supabase schema.",
+  "type": "module",
+  "bin": {
+    "youbank-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "smoke": "node scripts/smoke.mjs",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "agent",
+    "memory",
+    "knowledge-base",
+    "personal-knowledge",
+    "second-brain",
+    "rag",
+    "hybrid-search",
+    "supabase",
+    "postgres",
+    "vault",
+    "youtube"
+  ],
+  "author": "Daz Alderson",
+  "license": "MIT",
+  "homepage": "https://github.com/Dalydoo/youbank-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dalydoo/youbank-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dalydoo/youbank-mcp/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist/",
+    "schema/",
+    "docs/",
+    "scripts/smoke.mjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@supabase/supabase-js": "^2.101.1",
+    "@xenova/transformers": "^2.17.2"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20"
+  }
+}
