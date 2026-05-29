@@ -60,6 +60,14 @@ Columns: `id`, `item_id` (FK → yb_vault_items), `segment_index` (unique per
 item), `segment_start_s` / `segment_end_s` (numeric seconds), `segment_text`,
 `note` (optional annotation).
 
+### `yb_patterns`
+
+Auto-synthesised patterns lifted from clusters of atomic notes (≥3 occurrences across ≥2 distinct vault items). Read by `youbank_get_patterns`. Populated by the YouBank-side clustering job (`scripts/cluster-patterns.mjs`).
+
+Columns: `id` (uuid PK), `pattern_text` (canonical statement — v1 is the centroid note's verbatim text), `pattern_type` (atomic_note_type enum), `occurrence_count` (cluster size), `source_diversity` (distinct items), `avg_confidence` (mean of source notes' confidence_score), `source_note_ids` (uuid[] — provenance), `source_item_ids` (uuid[] — denorm), `model` (v2 synthesiser, NULL in v1), `embedding` (384-dim MiniLM), `first_observed_at`, `last_reinforced_at`, `status` (`active`/`stale`/`merged`/`hidden`).
+
+The `yb_patterns_search(query_embedding, min_cosine, top_n)` function exposes cosine retrieval for the MCP tool.
+
 ## Materialised view
 
 ### `yb_vault_stats_mv`

@@ -35,6 +35,7 @@ is published as:
 | `youbank_entity_neighbours` | Top co-occurring entities for a named entity, ranked by co-occurrence weight. | `entity_name`, optional `top_n` (max 25) |
 | `youbank_get_highlights` | User-curated transcript-segment highlights — the passages the human explicitly flagged as important. | optional `item_id`, `category`, `since` (ISO), `limit` (max 200) |
 | `youbank_vault_stats` | Singleton stats row from a materialised view — total items, enriched count, atomic-note count, active-entity count. | (none) |
+| `youbank_get_patterns` | Synthesised patterns — claims observed across multiple sources, lifted into a higher-confidence layer above raw atomic notes. Each reports occurrence_count, source_diversity, avg_confidence. | optional `query`, `min_occurrence`, `since` (ISO), `limit` (max 100) |
 
 All tools are read-only. There are no write tools.
 
@@ -79,7 +80,7 @@ Expected output:
 
 ```
 smoke: initialize OK
-smoke: tools/list OK (6 tools: youbank_hybrid_search, youbank_get_vault_item, ...)
+smoke: tools/list OK (7 tools: youbank_hybrid_search, youbank_get_vault_item, ..., youbank_get_patterns)
 smoke: tools/call youbank_hybrid_search OK
 smoke: tools/call youbank_vault_stats OK
 smoke: OK
@@ -111,7 +112,7 @@ two seed items; `youbank_vault_stats` will report non-zero counts.
 ```
 
 Restart Claude Desktop. In a new chat, ask **"what youbank tools do you
-have?"** — Claude should list all six `youbank_*` tools.
+have?"** — Claude should list all seven `youbank_*` tools.
 
 **Cursor / Cline / Claude Code** — same shape, written to the host's MCP
 config (`.cursor/mcp.json`, `.cline/mcp_settings.json`, or `.mcp.json`).
@@ -147,6 +148,7 @@ subsequent calls inference in ~50-100ms.
                                             │  ─ yb_atomic_notes  │
                                             │  ─ yb_entity_*      │
                                             │  ─ yb_highlights    │
+                                            │  ─ yb_patterns      │
                                             │  ─ yb_vault_stats_mv│
                                             │  ─ yb_hybrid_search │
                                             └─────────────────────┘
@@ -177,6 +179,7 @@ map of what each tool reads:
 | `youbank_entity_neighbours` | `yb_research_entities`, `yb_entity_relations` |
 | `youbank_get_highlights` | `yb_highlights` joined to `yb_vault_items` |
 | `youbank_vault_stats` | `yb_vault_stats_mv` (materialised view) |
+| `youbank_get_patterns` | `yb_patterns` (via `yb_patterns_search` RPC) |
 
 ## Cost model
 
@@ -188,7 +191,7 @@ is Supabase REST calls plus the one-time `~46MB` MiniLM model download to
 
 ## Status
 
-- **v0.1.0** — six read-only tools, stdio transport.
+- **v0.1.0** — seven read-only tools, stdio transport.
 - Companion app (YouBank vault) is private; the schema and tool interface
   are open.
 - No write tools planned for v0.x — write paths belong in the companion app

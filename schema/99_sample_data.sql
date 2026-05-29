@@ -166,3 +166,22 @@ ON CONFLICT (item_id, segment_index) DO NOTHING;
 
 -- Refresh the materialised view so vault_stats reflects the seeded rows.
 SELECT refresh_yb_vault_stats_mv();
+
+-- ---------- Sample pattern (for non-empty youbank_get_patterns smoke) -------
+INSERT INTO yb_patterns (
+  pattern_text, pattern_type, occurrence_count, source_diversity,
+  avg_confidence, source_note_ids, source_item_ids, model,
+  embedding, status
+)
+SELECT
+  'Hybrid retrieval (BM25 + vector + RRF) consistently outperforms pure-vector on practical knowledge-base sizes',
+  'claim'::atomic_note_type,
+  3,
+  2,
+  0.78,
+  ARRAY(SELECT id FROM yb_atomic_notes LIMIT 3),
+  ARRAY(SELECT DISTINCT vault_item_id FROM yb_atomic_notes LIMIT 2),
+  NULL,
+  (SELECT embedding FROM yb_atomic_notes WHERE embedding IS NOT NULL LIMIT 1),
+  'active'
+WHERE EXISTS (SELECT 1 FROM yb_atomic_notes WHERE embedding IS NOT NULL);

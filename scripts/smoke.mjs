@@ -71,8 +71,8 @@ function waitForReply(id, timeoutMs = 30_000) {
   // 1. tools/list
   send({ jsonrpc: "2.0", id: 1, method: "tools/list" });
   const list = await waitForReply(1);
-  if (!list.result || !Array.isArray(list.result.tools) || list.result.tools.length !== 6) {
-    console.error("smoke FAIL: tools/list did not return 6 tools:", JSON.stringify(list));
+  if (!list.result || !Array.isArray(list.result.tools) || list.result.tools.length !== 7) {
+    console.error("smoke FAIL: tools/list did not return 7 tools:", JSON.stringify(list));
     child.kill(); process.exit(1);
   }
   console.log(`smoke: tools/list OK (${list.result.tools.length} tools: ${list.result.tools.map((t) => t.name).join(", ")})`);
@@ -103,6 +103,20 @@ function waitForReply(id, timeoutMs = 30_000) {
   }
   console.log("smoke: tools/call youbank_vault_stats OK");
   console.log("  vault_stats:", statsTxt.replace(/\s+/g, " ").slice(0, 200));
+
+  // 4. tools/call youbank_get_patterns (returns 0 patterns is OK pre-clustering)
+  send({
+    jsonrpc: "2.0", id: 4, method: "tools/call",
+    params: { name: "youbank_get_patterns", arguments: { limit: 5 } },
+  });
+  const pats = await waitForReply(4);
+  const patsTxt = pats.result?.content?.[0]?.text ?? "";
+  if (!patsTxt.includes("pattern") && !patsTxt.includes("No patterns")) {
+    console.error("smoke FAIL: get_patterns did not return expected text:", JSON.stringify(pats));
+    child.kill(); process.exit(1);
+  }
+  console.log("smoke: tools/call youbank_get_patterns OK");
+  console.log("  patterns:", patsTxt.replace(/\s+/g, " ").slice(0, 200));
 
   console.log("smoke: OK");
   child.kill();

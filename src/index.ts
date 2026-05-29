@@ -12,9 +12,11 @@ import { tool as getAtomicNotes }   from "./tools/atomic-notes.js";
 import { tool as entityNeighbours } from "./tools/entity-neighbours.js";
 import { tool as vaultStats }       from "./tools/vault-stats.js";
 import { tool as getHighlights }    from "./tools/get-highlights.js";
+import { tool as getPatterns }      from "./tools/get-patterns.js";
 
 const ALL_TOOLS = [
-  hybridSearch, getVaultItem, getAtomicNotes, entityNeighbours, vaultStats, getHighlights,
+  hybridSearch, getVaultItem, getAtomicNotes, entityNeighbours,
+  vaultStats, getHighlights, getPatterns,
 ] as const;
 
 const server = new Server(
