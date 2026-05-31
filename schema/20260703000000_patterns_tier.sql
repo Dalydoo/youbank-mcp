@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS yb_config (
 INSERT INTO yb_config (key, value, description) VALUES
   ('pattern_min_occurrence',            '3',     'Min atomic notes per cluster to promote'),
   ('pattern_min_source_diversity',      '2',     'Min distinct vault items backing a pattern'),
-  ('pattern_cosine_threshold_cluster',  '0.85',  'Min cosine to consider two notes same cluster'),
+  ('pattern_cosine_threshold_cluster',  '0.80',  'Min cosine to consider two notes same cluster'),
   ('pattern_cosine_threshold_reinforce','0.90',  'Min cosine to merge cluster with existing pattern'),
   ('pattern_cosine_threshold_lens',     '0.55',  'Min cosine for LENS preferred-citation retrieval'),
   ('pattern_lens_top_k',                '10',    'Patterns to inject per LENS turn'),
